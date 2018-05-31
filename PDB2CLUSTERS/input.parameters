@@ -1,0 +1,23 @@
+#Input files
+pdb_list=list.txt
+#Input options.
+download=True
+align=True
+#align_mask= resi 12-17+98-100+208+227+228
+align_mask= chain B and resi 450-610 
+clustering=False
+#Clustering methods (DBSCAN, HDBSCAN, Agglomerative)
+method=HDBSCAN
+#Clustering parameters.
+#Agglomerative method
+distance_threshold=2.5
+#DBSCAN method
+epsilon=0.8
+minsamples=2
+#hdbscan
+min_cluster_size=2
+#Output settings
+return_minimal_occupancy=2
+# la mascara para retornar los sitios puede ser diferente de los que usas para alinear.
+# Por defecto retorna todos los sitios.
+return_mask= resi 12-17+98-100+208+227+228

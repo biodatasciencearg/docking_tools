@@ -1,0 +1,81 @@
+
+
+pdbs2bias.py se desarrollo a fin de que  a partir de una lista de pdbs (codigo de 4 letras y las cadenas), obtener las aguas y devolver los sitios de hidratacion consenso.
+./pdbs2bias.py -f files de parametros.parameters
+
+##########################################################################################################
+Para ello el programa ejecuta  el siguiente pipeline.
+
+
+Descarga los PDBs del RCSB 			(tomando el primero de la lista como referencia)
+	||
+  Alinea los PDBs				(Es opcional la mascara con la que alineamos)
+	||
+  Colecta todas las moleculas de agua.
+	||
+ Realiza un clustering aglomerativo, DBSCAN o HDBSCAN.
+        ||  
+ Retorna los sitios consenso como el centroide de cada cluster.
+
+#########################################################################################################
+
+En este pipeline todos los argumentos menos la lista son opcionales.
+####Descarga######
+1)El programa crea una carpeta 'data' y una 'obsolete' donde guarda los pdbs  tal cual estan en el rcsb. 
+
+	pdbXXXX.ent donde XXXX es el pdb code en lowercase 
+Si uno los tiene descargados deberia tener una carpeta data con el mismo formato antes descripto y ejecutar la sentencia.
+ 
+<download> puede ser seteado como True o False por defecto es True.
+Sin embargo si en un paso previo ya los descargo automaticamente saltea el paso de descarga.
+
+#### Alineamiento
+2) El programa utiliza el algoritmo CEalign de pymol. en este paso tendremos dos flags asociados
+-aFalse no realizara el alinemiento 
+<align> puede ser seteado como True o False por defecto es True.
+En caso de que queramos alinearno por defecto lo realiza. Sin embargo si ademas queres usar una mascara para el sitio utilizamos la siguiente sintaxis (para mas informacion ver manual de pymol).
+<align_mask>es el flag para insertar una mascara para alinear. Sino por defecto el programa alinea todo lo que puede.
+
+
+#### Clustering #####
+Muchas veces uno solo quiere alinear las proteinas a partir de una lista sin hacer un analisis de sitios de hidratacion.
+entonces seteamos 
+<clustering> False por defecto es True.
+si quiere saber mas de algoritmos http://hdbscan.readthedocs.io/en/latest/comparing_clustering_algorithms.html
+
+3) Hay posibles algoritmos de clustering, en principio funcionan: clustering aglomerativo, DBSCAN y HDBSCAN.
+	HDBSCAN. Es el por defecto y solo tiene un argumento que es el min_cluster_size. Se puede cambiar si paramentro por defecto como:
+	<method> donnde las opciones son Agglomerative, DBSCAN y HDBSCAN
+	donde cada metodo tiene sus propios paramentros( para mas informacion ver el archivo de ejemplo)
+	si quiere saber como funciona http://hdbscan.readthedocs.io/en/latest/how_hdbscan_works.html
+
+	clustering aglomerativo donde calcula la distancia de todos contra todos 
+	donde la distanca es euclidiana y el parametro para diferenciar clusters es la distancia (distance_threshold).
+	
+	DBSCAN. Tiene dos parametros el epsilon y el minsamples. ambos se pueden modificar con los parametros dentro del archivo de input.
+Si usted quiere hacer desarrollo puede intentar cambiar el algoritmo. Sino recomieno fuertemente usar el por defecto, y el parametro de ocupancia por defecto.
+ 
+
+######Output ######################
+El programa arroja un archivo que se llama cluster cluster_cg.xyz en el directorio donde se ejecuto.
+<return_minimal_occupancy> es una variable para  considerar sitios que tienen una ocupancia minim.
+
+<return_mask > es la variable para devolver los sitios a 5 A de la seleccion (pymol selection sintax)
+
+#####################INSTALACION y DEPENDENCIAS:###################################
+
+
+Para que dicho programa funcione correctamente debe tener correctamente instalado:
+* Biopython
+* scipy
+* numpy
+* pymol
+* sklearn (scikit-learn>=0.16)
+* hdbscan 
+
+Enjoy!!
+
+
+
+
+
